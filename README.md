@@ -40,7 +40,7 @@ python3 -m unittest discover -v
 
 ## Project Status
 
-Phase 1: Python Calculation Engine - In Completed
+Phase 1: Python Calculation Engine - Completed
 
 ## Future Development
 
