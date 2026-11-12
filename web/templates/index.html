@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalcMaster | Smart Calculator</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <main class="calculator">
+        <header>
+            <h1>CalcMaster</h1>
+            <p>Your all-in-one calculator</p>
+        </header>
+
+        <form method="POST">
+
+            <label for="operation">Choose operation</label>
+            <select name="operation" id="operation" required>
+                <optgroup label="Basic Operations">
+                    <option value="add">Addition (+)</option>
+                    <option value="subtract">Subtraction (-)</option>
+                    <option value="multiply">Multiplication (×)</option>
+                    <option value="divide">Division (÷)</option>
+                </optgroup>
+
+                <optgroup label="Scientific Operations">
+                    <option value="power">Power</option>
+                    <option value="square_root">Square Root</option>
+                    <option value="logarithm">Logarithm</option>
+                    <option value="sine">Sine</option>
+                    <option value="cosine">Cosine</option>
+                    <option value="tangent">Tangent</option>
+                    <option value="constant">Mathematical Constant</option>
+                </optgroup>
+            </select>
+
+            <label for="number">First number / angle</label>
+            <input type="number" step="any" name="number"
+                   id="number" placeholder="Enter a number">
+
+            <label for="second_number">Second number</label>
+            <input type="number" step="any" name="second_number"
+                   id="second_number" placeholder="Enter second number">
+
+            <label for="base">Logarithm base (default: 10)</label>
+            <input type="number" step="any" name="base"
+                   id="base" placeholder="Enter logarithm base">
+
+            <label for="constant_name">Constant</label>
+            <select name="constant_name" id="constant_name">
+                <option value="pi">Pi (π)</option>
+                <option value="e">Euler's number (e)</option>
+            </select>
+
+            <button type="submit">Calculate</button>
+        </form>
+
+        {% if result is not none %}
+        <section class="result">
+            <h2>Result</h2>
+            <p>{{ result }}</p>
+        </section>
+        {% endif %}
+
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
