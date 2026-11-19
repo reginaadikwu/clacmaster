@@ -1,4 +1,3 @@
-
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +9,7 @@ from database import initialize_database
 from history import (
     add_calculation,
     get_calculation_history,
+    get_calculation_by_id,
     delete_calculation,
     clear_calculation_history
 )
@@ -59,6 +59,21 @@ class TestPhase5Database(unittest.TestCase):
 
         self.assertEqual(len(history), 1)
         self.assertEqual(history[0]["expression"], "10 + 5")
+
+
+    def test_get_calculation_by_id(self):
+        record_id = add_calculation("add", "10 + 5", 15)
+
+        calculation = get_calculation_by_id(record_id)
+
+        self.assertEqual(calculation["expression"], "10 + 5")
+        self.assertEqual(calculation["result"], "15")
+
+    def test_get_nonexistent_calculation_by_id(self):
+        calculation = get_calculation_by_id(9999)
+
+        self.assertIsNone(calculation)
+
 
     def test_delete_calculation(self):
         record_id = add_calculation("add", "10 + 5", 15)

@@ -24,6 +24,7 @@ from database import initialize_database
 from history import (
     add_calculation,
     get_calculation_history,
+    get_calculation_by_id,
     delete_calculation,
     clear_calculation_history,
 )
@@ -86,6 +87,7 @@ def build_expression(operation, a=None, b=None, base=None, name=None):
 def home():
     result = None
     expression = None
+    calculation_id = None
 
     if request.method == "POST":
         operation = request.form.get("operation", "")
@@ -146,7 +148,7 @@ def home():
 
             # Record only successful calculations
             if is_successful_result(result):
-                add_calculation(operation, expression, result)
+                calculation_id = add_calculation(operation, expression, result)
 
         except (ValueError, KeyError, TypeError):
             result = "Error: Please enter valid numbers"
@@ -158,6 +160,7 @@ def home():
         "index.html",
         result=result,
         expression=expression,
+        calculation_id=calculation_id,
         history=history,
         saved_calculations=saved_calculations,
     )
@@ -178,23 +181,33 @@ def clear_history():
 @app.route("/saved", methods=["POST"])
 def save_current_calculation():
     title = request.form.get("title", "").strip()
-    expression = request.form.get("expression", "").strip()
-    result = request.form.get("result", "").strip()
+    calculation_id = request.form.get("calculation_id", "")
 
     try:
-        if not expression or not result:
-            raise ValueError("Calculation details are missing")
+        if not title:
+            raise ValueError("Title cannot be empty")
 
         if len(title) > 100:
             raise ValueError("Title must not exceed 100 characters")
 
-        save_calculation(title, expression, result)
+        if not calculation_id.isdigit():
+            raise ValueError("Invalid calculation ID")
+
+        calculation = get_calculation_by_id(int(calculation_id))
+
+        if calculation is None:
+            raise ValueError("Calculation not found")
+
+        save_calculation(
+            title,
+            calculation["expression"],
+            calculation["result"],
+        )
 
     except ValueError:
         pass
 
     return redirect(url_for("home"))
-
 
 @app.route("/saved/<int:calculation_id>/delete", methods=["POST"])
 def remove_saved_calculation(calculation_id):

@@ -1,4 +1,3 @@
-
 import tempfile
 import unittest
 from pathlib import Path
@@ -73,21 +72,55 @@ class TestCalcMasterWeb(unittest.TestCase):
         self.assertEqual(get_calculation_history(), [])
 
     def test_save_calculation_route(self):
+        from history import add_calculation
+        from saved_calculations import get_saved_calculations
+
+        calculation_id = add_calculation("add", "10 + 5", 15)
+
         response = self.client.post("/saved", data={
             "title": "My Test",
-            "expression": "10 + 5",
-            "result": "15"
+            "calculation_id": str(calculation_id)
         })
 
         self.assertEqual(response.status_code, 302)
-
-        from saved_calculations import get_saved_calculations
 
         saved = get_saved_calculations()
 
         self.assertEqual(len(saved), 1)
         self.assertEqual(saved[0]["title"], "My Test")
+        self.assertEqual(saved[0]["expression"], "10 + 5")
+        self.assertEqual(saved[0]["result"], "15")
 
+    def test_save_nonexistent_calculation_is_rejected(self):
+        from saved_calculations import get_saved_calculations
+
+        response = self.client.post("/saved", data={
+            "title": "Invalid Calculation",
+            "calculation_id": "9999"
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(get_saved_calculations(), [])
+
+    def test_browser_submitted_expression_and_result_are_ignored(self):
+        from history import add_calculation
+        from saved_calculations import get_saved_calculations
+
+        calculation_id = add_calculation("add", "10 + 5", 15)
+
+        self.client.post("/saved", data={
+            "title": "Trusted Calculation",
+            "calculation_id": str(calculation_id),
+            "expresssssion": "999 + 999",
+            "result": "1998"
+        })
+
+        saved = get_saved_calculations()
+
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["expression"], "10 + 5")
+        self.assertEqual(saved[0]["result"], "15")
+    
     def test_delete_history_route(self):
         from history import add_calculation, get_calculation_history
 

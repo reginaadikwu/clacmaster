@@ -53,6 +53,30 @@ def get_calculation_history(limit=50):
         connection.close()
 
 
+def get_calculation_by_id(calculation_id):
+    """Retrieve one calculation from history using its ID."""
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute(
+            """
+            SELECT * FROM calculation_history
+            WHERE id = ?
+            """,
+            (calculation_id,)
+        )
+
+        row = cursor.fetchone()
+
+        return dict(row) if row else None
+
+    finally:
+        connection.close()
+
+
 def delete_calculation(calculation_id):
     """Delete one calculation using its ID."""
 
