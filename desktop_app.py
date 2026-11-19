@@ -1,13 +1,22 @@
 import tkinter as tk
+
 from calculator import calculate
 
+from scientific_calculator import (
+    power,
+    square_root as calculate_square_root,
+    logarithm,
+    sine,
+    cosine,
+    tangent,
+    get_constant
+)
 
 class CalcMasterDesktop:
 
     def __init__(self, root):
-        self.root = root
         self.root.title("CalcMaster")
-        self.root.geometry("360x540")
+        self.root.geometry("380x700")
         self.root.resizable(False, False)
         self.root.configure(bg="#172033")
 
@@ -66,7 +75,9 @@ class CalcMasterDesktop:
             ["4", "5", "6", "−"],
             ["1", "2", "3", "+"],
             ["±", "0", ".", "="],
-            ["x²", "√x", "", ""]
+            ["x²", "√x", "xʸ", "log"],
+            ["sin", "cos", "tan", "π"],
+            ["e", "", "", ""]
         ]
 
         for row_index, row in enumerate(buttons):
@@ -103,7 +114,7 @@ class CalcMasterDesktop:
                 weight=1
             )
 
-        for row in range(6):
+        for row in range(8):
             button_frame.rowconfigure(
                 row,
                 weight=1
@@ -146,7 +157,7 @@ class CalcMasterDesktop:
         elif value == ".":
             self.press_decimal()
 
-        elif value in ["+", "−", "×", "÷"]:
+        elif value in ["+", "−", "×", "÷", "xʸ"]:
             self.press_operator(value)
 
         elif value == "=":
@@ -169,6 +180,24 @@ class CalcMasterDesktop:
 
         elif value == "±":
             self.toggle_sign()
+
+        elif value == "log":
+            self.calculate_logarithm()
+
+        elif value == "sin":
+            self.calculate_trig(sine)
+
+        elif value == "cos":
+            self.calculate_trig(cosine)
+
+        elif value == "tan":
+            self.calculate_trig(tangent)
+
+        elif value == "π":
+            self.insert_constant("pi")
+
+        elif value == "e":
+            self.insert_constant("e")
 
     def press_number(self, number):
 
@@ -231,11 +260,14 @@ class CalcMasterDesktop:
             "÷": "divide"
         }
 
-        result = calculate(
-            operations[self.pending_operator],
-            self.first_operand,
-            second_operand
-        )
+        if self.pending_operator == "xʸ":
+            result = power(self.first_operand, second_operand)
+        else:
+            result = calculate(
+                operations[self.pending_operator],
+                self.first_operand,
+                second_operand
+            )
 
         if isinstance(result, str):
             self.display.set(result)
@@ -276,28 +308,31 @@ class CalcMasterDesktop:
 
         try:
             number = float(self.display.get())
-            result = number ** 2
+            result = power(number, 2)
 
-            self.display.set(self.format_result(result))
+            if isinstance(result, str):
+                self.display.set(result)
+            else:
+                self.display.set(self.format_result(result))
+
             self.start_new_number = True
 
         except (ValueError, OverflowError):
             self.display.set("Error")
             self.start_new_number = True
 
+
     def square_root(self):
 
         try:
             number = float(self.display.get())
+            result = calculate_square_root(number)
 
-            if number < 0:
-                self.display.set("Error")
-                self.start_new_number = True
-                return
+            if isinstance(result, str):
+                self.display.set(result)
+            else:
+                self.display.set(self.format_result(result))
 
-            result = number ** 0.5
-
-            self.display.set(self.format_result(result))
             self.start_new_number = True
 
         except (ValueError, OverflowError):
@@ -314,6 +349,43 @@ class CalcMasterDesktop:
 
         except ValueError:
             return
+
+    def calculate_logarithm(self):
+        try:
+            number = float(self.display.get())
+            result = logarithm(number)
+
+            if isinstance(result, str):
+                self.display.set(result)
+            else:
+                self.display.set(self.format_result(result))
+
+            self.start_new_number = True
+
+        except (ValueError, OverflowError):
+            self.display.set("Error")
+            self.start_new_number = True
+
+    def calculate_trig(self, operation):
+        try:
+            angle = float(self.display.get())
+            result = operation(angle)
+
+            if isinstance(result, str):
+                self.display.set(result)
+            else:
+                self.display.set(self.format_result(result))
+
+            self.start_new_number = True
+
+        except (ValueError, OverflowError):
+            self.display.set("Error")
+            self.start_new_number = True
+
+    def insert_constant(self, name):
+        result = get_constant(name)
+        self.display.set(self.format_result(result))
+        self.start_new_number = True
 
     def backspace(self):
 
