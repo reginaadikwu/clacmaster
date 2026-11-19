@@ -1,104 +1,113 @@
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Section headings */
+.calculator section > h2 {
+    color: #1e293b;
+    font-size: 20px;
+    margin-bottom: 15px;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f1f5f9;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+/* Spacing between major sections */
+.calculator > section {
+    margin-top: 25px;
 }
 
-.calculator {
-    background: white;
-    width: 100%;
-    max-width: 450px;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+/* Expression displayed with the result */
+.expression {
+    margin-top: 12px;
+    color: #475569;
+    font-size: 14px;
+    overflow-wrap: anywhere;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-header h1 {
-    color: #2563eb;
-    font-size: 30px;
-    margin-bottom: 8px;
-}
-
-header p {
-    color: #64748b;
-}
-
-form {
+/* History and saved calculation lists */
+.record-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-label {
-    color: #334155;
-    font-weight: bold;
+/* Individual calculation records */
+.record {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+}
+
+.record h3 {
+    color: #1e40af;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.record-expression {
+    color: #475569;
     font-size: 14px;
 }
 
-input,
-select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 15px;
-    background: white;
-}
-
-input:focus,
-select:focus {
-    outline: 2px solid #93c5fd;
-    border-color: #2563eb;
-}
-
-button {
-    margin-top: 10px;
-    padding: 14px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #1d4ed8;
-}
-
-.result {
-    margin-top: 25px;
-    padding: 18px;
-    background: #eff6ff;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.result h2 {
-    color: #1d4ed8;
-    margin-bottom: 10px;
-}
-
-.result p {
+.record-result {
     color: #0f172a;
-    font-size: 22px;
     font-weight: bold;
-    overflow-wrap: anywhere;
+    margin-top: 5px;
+}
+
+.record small {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 7px;
+}
+
+/* Small delete forms */
+.record form {
+    flex-shrink: 0;
+    width: auto;
+}
+
+.delete-button {
+    margin-top: 0;
+    padding: 8px 12px;
+    background: #dc2626;
+    font-size: 12px;
+}
+
+.delete-button:hover {
+    background: #b91c1c;
+}
+
+/* Clear history button */
+.clear-button {
+    background: #475569;
+}
+
+.clear-button:hover {
+    background: #334155;
+}
+
+/* Empty history and saved-calculation messages */
+.empty-message {
+    color: #64748b;
+    font-size: 14px;
+    padding: 12px 0;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .calculator {
+        padding: 20px;
+    }
+
+    .record {
+        align-items: flex-start;
+    }
 }
