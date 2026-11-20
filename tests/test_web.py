@@ -159,6 +159,26 @@ class TestCalcMasterWeb(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(get_saved_calculations(), [])
 
+    def test_non_finite_numbers_are_rejected(self):
+        from history import get_calculation_history
+
+        invalid_numbers = ["NaN", "Infinity", "-Infinity"]
+
+        for invalid_number in invalid_numbers:
+            with self.subTest(number=invalid_number):
+                response = self.client.post("/", data={
+                    "operation": "add",
+                    "number": invalid_number,
+                    "second_number": "5"
+                })
+
+                self.assertEqual(response.status_code, 200)
+                self.assertIn(
+                    b"Error: Please enter valid numbers",
+                    response.data
+                )
+
+        self.assertEqual(get_calculation_history(), [])
 
 if __name__ == "__main__":
     unittest.main()

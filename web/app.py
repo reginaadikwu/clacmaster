@@ -1,4 +1,5 @@
 import sys
+import math
 from pathlib import Path
 
 from flask import Flask, render_template, request, redirect, url_for
@@ -36,6 +37,15 @@ from saved_calculations import (
 )
 
 app = Flask(__name__)
+
+def validate_number(value):
+    """Convert input to float and reject non-finite numbers."""
+    number = float(value)
+
+    if not math.isfinite(number):
+        raise ValueError("Number must be finite")
+
+    return number
 
 # Create the database tables when the application starts
 initialize_database()
@@ -99,29 +109,29 @@ def home():
             name = None
 
             if operation in ("add", "subtract", "multiply", "divide"):
-                a = float(request.form["number"])
-                b = float(request.form["second_number"])
+                a = validate_number(request.form["number"])
+                b = validate_number(request.form["second_number"])
 
                 result = calculate(operation, a, b)
 
             elif operation == "power":
-                a = float(request.form["number"])
-                b = float(request.form["second_number"])
+                a = validate_number(request.form["number"])
+                b = validate_number(request.form["second_number"])
 
                 result = power(a, b)
 
             elif operation == "square_root":
-                a = float(request.form["number"])
+                a = validate_number(request.form["number"])
                 result = square_root(a)
 
             elif operation == "logarithm":
-                a = float(request.form["number"])
-                base = float(request.form.get("base") or 10)
+                a = validate_number(request.form["number"])
+                base = validate_number(request.form.get("base") or 10)
 
                 result = logarithm(a, base)
 
             elif operation in ("sine", "cosine", "tangent"):
-                a = float(request.form["number"])
+                a = validate_number(request.form["number"])
 
                 functions = {
                     "sine": sine,
