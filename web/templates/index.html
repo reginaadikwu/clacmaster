@@ -21,6 +21,7 @@
             <h2>Calculator</h2>
 
             <form method="POST" action="{{ url_for('home') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <label for="operation">Choose operation</label>
                 <select name="operation" id="operation" required>
@@ -80,6 +81,7 @@
 
             <!-- Save this calculation -->
             <form method="POST" action="{{ url_for('save_current_calculation') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <label for="title">Give this calculation a title</label>
 
@@ -126,6 +128,7 @@
                         <form method="POST"
                               action="{{ url_for('remove_history',
                                                  calculation_id=item.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                             <button type="submit" class="delete-button">
                                 Delete
@@ -138,6 +141,7 @@
                 </div>
 
                 <form method="POST" action="{{ url_for('clear_history') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="clear-button">
                         Clear All History
                     </button>
@@ -182,8 +186,9 @@
                         <form method="POST"
                               action="{{ url_for('remove_saved_calculation',
                                                  calculation_id=item.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                            <button type="submit" class="delete-button">
+                           <button type="submit" class="delete-button">
                                 Delete
                             </button>
                         </form>

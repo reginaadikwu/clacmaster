@@ -3,6 +3,8 @@ import math
 from pathlib import Path
 
 from flask import Flask, render_template, request, redirect, url_for
+from flask_wtf.csrf import CSRFProtect
+import os
 
 # Make the project root accessible to Python
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -37,6 +39,13 @@ from saved_calculations import (
 )
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = os.environ.get(
+    "CALCMASTER_SECRET_KEY",
+    "development-only-change-this-key"
+)
+
+csrf = CSRFProtect(app)
 
 def validate_number(value):
     """Convert input to float and reject non-finite numbers."""

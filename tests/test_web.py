@@ -27,12 +27,29 @@ class TestCalcMasterWeb(unittest.TestCase):
         database.initialize_database()
 
         app.config["TESTING"] = True
+        app.config["WTF_CSRF_ENABLED"] = False
+
         self.client = app.test_client()
 
     def tearDown(self):
         self.database_patch.stop()
         self.data_patch.stop()
         self.temp_dir.cleanup()
+
+    def test_csrf_protection_rejects_missing_token(self):
+        app.config["WTF_CSRF_ENABLED"] = True
+
+        try:
+            response = self.client.post("/", data={
+                "operation": "add",
+                "number": "10",
+                "second_number": "5"
+            })
+
+            self.assertEqual(response.status_code, 400)
+
+        finally:
+            app.config["WTF_CSRF_ENABLED"] = False
 
     def test_home_page_loads(self):
         response = self.client.get("/")
